@@ -14,32 +14,32 @@ export const usersignup = async (req, res) => {
     // Check if email is provided
     if (!email) {
       return res.status(code.success).json({
-        message: "Email Id Required",
-        code: code.failed,
-        status : status.failed
+        ResponseMessage: "Email Id Required",
+        ResponseCode: code.failed,
+        succeeded : status.failed
       });
     }
   
     // Check if password is provided
     if (!password) {
       return res.status(code.success).json({
-        message: "Password  Required",
-        code: code.failed,
-        status : status.failed
+        ResponseMessage: "Password  Required",
+        ResponseCode: code.failed,
+        succeeded : status.failed
       });
     }
     if (!name) {
       return res.status(code.success).json({
-        message: "Name  Required",
-        code: code.failed,
-        status : status.failed
+        ResponseMessage: "Name  Required",
+        ResponseCode: code.failed,
+        succeeded : status.failed
       });
     }
     if (!number) {
       return res.status(code.success).json({
-        message: "Number  Required",
-        code: code.failed,
-        status : status.failed
+        ResponseMessage: "Number  Required",
+        ResponseCode: code.failed,
+        succeeded : status.failed
       });
     }
   
@@ -50,9 +50,9 @@ export const usersignup = async (req, res) => {
       // If an existing user is found, return an error message
       if (oldUser) {
         return res.status(code.success).json({
-          message: "Account already exists with this email address!",
-          code: code.failed,
-          status : status.failed
+          ResponseMessage: "Account already exists with this email address!",
+          ResponseCode: code.failed,
+          succeeded : status.failed
         });
       }
   
@@ -89,19 +89,22 @@ export const usersignup = async (req, res) => {
       
       // Return the created user and the token with a success message
       return res.status(201).json({
-        data: {...response._doc, token},
-        code: code.success,
-        status: status.success,
-        message: `User Signup Successfully otp sent to your email account ! ${otp}`,
+        responseBody: {...response._doc, token},
+        ResponseCode: code.success,
+        succeeded: status.success,
+        ResponseMessage: `User Signup Successfully otp sent to your email account ! ${otp}`,
       });
     } catch (error) {
       // If an error occurs, return an error message and log the error
-      res.status(500).json({ message: "Something Went Wrong" });
+      res.status(500).json({    
+         ResponseCode: code.failed,
+         succeeded: status.failed,
+         ResponseMessage: "Something Went Wrong" });
       console.log(error);
     }
   };
 
-  // Export a function for user signin
+// Export a function for user signin
 export const usersignin = async (req, res) => {
     // Destructure email and password from request body
     const { email, password } = req.body;
@@ -109,18 +112,18 @@ export const usersignin = async (req, res) => {
     // Check if email is provided
     if (!email) {
       return res.status(code.success).json({
-        code: code.failed,
-        status: status.failed,
-        message: "Email Id Required",
+        ResponseCode: code.failed,
+        succeeded: status.failed,
+        ResponseMessage: "Email Id Required",
       });
     }
   
     // Check if password is provided
     if (!password) {
       return res.status(code.success).json({
-        code: code.failed,
-        status: status.failed,
-        message: "Password Required",
+        ResponseCode: code.failed,
+        succeeded: status.failed,
+        ResponseMessage: "Password Required",
       });
     }
   
@@ -133,9 +136,9 @@ export const usersignin = async (req, res) => {
       // If no user is found, return an error message
       if (!oldUser) {
         return res.status(code.success).json({
-          code: code.failed,
-          status : status.failed,
-          message: "Account Doesn't Exists!!",
+          ResponseCode: code.failed,
+          succeeded : status.failed,
+          ResponseMessage: "Account Doesn't Exists!!",
         });
       }
   
@@ -145,29 +148,32 @@ export const usersignin = async (req, res) => {
       // If the passwords don't match, return an error message
       if (!isPasswordCorrect) {
         return res.status(code.success).json({
-            code: code.failed,
-            status : status.failed,
-          message: "Invalid Credentiails",
+          ResponseCode: code.failed,
+          succeeded : status.failed,
+          ResponseMessage: "Invalid Credentiails",
         });
       }
   
       // Generate a JWT token with the user's email and _id
       const token = jwt.sign(
-        { emailPrimary: oldUser.email, _id: oldUser._id },
+        { email: oldUser.email, _id: oldUser._id },
         process.env.SECRET,
         { expiresIn: "10000h" }
       );
   
       // Return the user and the token with a success message
       res.status(code.success).json({
-        code: code.success,
-        status : status.success,
-        data: {...oldUser._doc,token},
-        message: 'User loggedin Successfully !',
+        ResponseCode: code.success,
+        succeeded : status.success,
+        responseBody: {...oldUser._doc,token},
+        ResponseMessage: 'loggedin Successfully !',
       });
     } catch (error) {
       // If an error occurs, return an error message and log the error
-      res.status(500).json({ message: "Something Went Wrong" });
+      res.status(500).json({    
+        ResponseCode: code.failed,
+        succeeded: status.failed,
+        ResponseMessage: "Something Went Wrong" });
       console.log(error);
     }
 }
@@ -176,9 +182,9 @@ export const forgotPassword = async (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.status(code.success).json({
-      code: code.failed,
-      status : status.failed,
-      message: "Email Required",
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "Email Required",
     });
   }
 
@@ -188,9 +194,9 @@ export const forgotPassword = async (req, res) => {
     });
     if (!oldUser) {
       return res.status(code.success).json({
-        code: code.failed,
-        status : status.failed,
-        message: "Account Doesn't Exists !!",
+        ResponseCode: code.failed,
+        succeeded : status.failed,
+        ResponseMessage: "Account Doesn't Exists !!",
       });
     }
     var otp = Math.floor(100000 + Math.random() * 900000);
@@ -207,12 +213,15 @@ export const forgotPassword = async (req, res) => {
     sendmail(passedData)
 
     res.status(code.success).json({
-      code: code.success,
-      status : status.success,
-      message: `Otp code sent your registered email address, ${otp} !!`,
+      ResponseCode: code.success,
+      succeeded : status.success,
+      ResponseMessage: `Otp code sent your registered email address, ${otp} !!`,
     });
   } catch (error) {
-    res.status(500).json({ message: "Something Went Wrong" });
+    res.status(500).json({    
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "Something Went Wrong" });
     console.log(error);
   }
 };
@@ -221,16 +230,16 @@ export const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
   if (!email) {
     return res.status(code.success).json({
-      code: code.failed,
-      status : status.failed,
-      message: "Email Required",
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "Email Required",
     });
   }
   if (!otp) {
     return res.status(code.success).json({
-      code: code.failed,
-      status : status.failed,
-      message: "Otp Code Required",
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "Otp Code Required",
     });
   }
 
@@ -240,9 +249,9 @@ export const verifyOtp = async (req, res) => {
     });
     if (!oldUser) {
       return res.status(code.success).json({
-        code: code.failed,
-        status : status.failed,
-        message: "Account Doesn't Exists !!",
+        ResponseCode: code.failed,
+        succeeded : status.failed,
+        ResponseMessage: "Account Doesn't Exists !!",
       });
     }
 
@@ -252,19 +261,22 @@ export const verifyOtp = async (req, res) => {
     console.log(response);
     if (response.otp == otp) {
       return res.status(code.success).json({
-        code: code.success,
-        status : status.success,
-        message: `Otp Verified Successfully !!`,
+        ResponseCode: code.success,
+        succeeded : status.success,
+        ResponseMessage: `Otp Verified Successfully !!`,
       });
     } else {
       return res.status(code.success).json({
-        code: code.failed,
-        status : status.failed,
-        message: `Invalid Otp !!`,
+        ResponseCode: code.failed,
+        succeeded : status.failed,
+        ResponseMessage: `Invalid Otp !!`,
       });
     }
   } catch (error) {
-    res.status(500).json({ message: "Something Went Wrong" });
+    res.status(500).json({    
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "Something Went Wrong" });
     console.log(error);
   }
 };
@@ -273,16 +285,16 @@ export const changePassword = async (req, res) => {
   const { email, newpassword } = req.body;
   if (!email) {
     return res.status(code.success).json({
-      code: code.failed,
-      status : status.failed,
-      message: "Email Required",
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "Email Required",
     });
   }
   if (!newpassword) {
     return res.status(code.success).json({
-      code: code.failed,
-      status : status.failed,
-      message: "New Password Required",
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "New Password Required",
     });
   }
   try {
@@ -292,21 +304,24 @@ export const changePassword = async (req, res) => {
     console.log(oldUser);
     if (!oldUser) {
       return res.status(code.success).json({
-        code: code.failed,
-      status : status.failed,
-        message: "Account Doesn't Exists !!",
+        ResponseCode: code.failed,
+        succeeded : status.failed,
+        ResponseMessage: "Account Doesn't Exists !!",
       });
     }
     const hashedPassword = await bcrypt.hash(newpassword, 12);
     oldUser.password = hashedPassword;
     await oldUser.save();
     return res.status(code.success).json({
-      code: code.success,
-      status : status.success,
-      message: `Password changed successfully, Please Login !!`,
+      ResponseCode: code.success,
+      succeeded : status.success,
+      ResponseMessage: `Password changed successfully, Please Login !!`,
     });
   } catch (error) {
-    res.status(500).json({ message: "Something Went Wrong" });
+    res.status(500).json({    
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "Something Went Wrong" });
     console.log(error);
   }
 };
@@ -315,9 +330,9 @@ export const resendOtp = async (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.status(code.success).json({
-      code: code.failed,
-      status : status.failed,
-      message: "Email Required",
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "Email Required",
     });
   }
 
@@ -327,9 +342,9 @@ export const resendOtp = async (req, res) => {
     });
     if (!oldUser) {
       return res.status(code.success).json({
-        code: code.failed,
-        status : status.failed,
-        message: "Account Doesn't Exists !!",
+        ResponseCode: code.failed,
+        succeeded : status.failed,
+        ResponseMessage: "Account Doesn't Exists !!",
       });
     }
     var otp = Math.floor(100000 + Math.random() * 900000);
@@ -347,12 +362,15 @@ export const resendOtp = async (req, res) => {
     sendmail(passedData)
 
     res.status(code.success).json({
-      code: code.success,
-      status : status.success,
-      message: `Otp code Resent your registered email address, ${otp} !!`,
+      ResponseCode: code.success,
+      succeeded : status.success,
+      ResponseMessage: `Otp code Resent your registered email address, ${otp} !!`,
     });
   } catch (error) {
-    res.status(500).json({ message: "Something Went Wrong" });
+    res.status(500).json({    
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "Something Went Wrong" });
     console.log(error);
   }
 };
@@ -362,9 +380,10 @@ export const getuserdetails = async (req, res) => {
   const { id } = req.params;
   if (!id) {
     return res.status(code.success).json({
-      message: "UserId Required",
-      code: code.failed,
-      status : status.failed,
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "UserId Required",
+      
     });
   }
   try {
@@ -373,16 +392,22 @@ export const getuserdetails = async (req, res) => {
 
     if (data) {
       return res.status(code.success).json(
-        { data: data,     
-          code: code.success,
-          status : status.success, });
+        { 
+          responseBody: data,     
+          ResponseCode: code.success,
+      succeeded: status.success, });
     } else {
       return res.status(code.success).json({ 
-        message: "No user found !",
-        code: code.failed,
-      status : status.failed, });
+        ResponseCode: code.failed,
+        succeeded: status.failed,
+        ResponseMessage: "No user found !",
+      
+     });
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({    
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "Something Went Wrong" });
   }
 };
