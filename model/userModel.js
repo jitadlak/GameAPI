@@ -30,6 +30,10 @@ const UserSchema = mongoose.Schema({
     role :{
         type: Number,
         default : 0
+    },
+    coins : {
+        type: Number,
+        default : 0
     }
    
 })
