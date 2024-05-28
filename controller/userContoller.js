@@ -14,8 +14,8 @@ export const usersignup = async (req, res) => {
     // Check if email is provided
     if (!email) {
       return res.status(code.success).json({
-        ResponseMessage: "Email Id Required",
         ResponseCode: code.failed,
+        ResponseMessage: "Email Id Required",
         succeeded : status.failed
       });
     }
@@ -23,22 +23,22 @@ export const usersignup = async (req, res) => {
     // Check if password is provided
     if (!password) {
       return res.status(code.success).json({
-        ResponseMessage: "Password  Required",
         ResponseCode: code.failed,
+        ResponseMessage: "Password  Required",
         succeeded : status.failed
       });
     }
     if (!name) {
       return res.status(code.success).json({
-        ResponseMessage: "Name  Required",
         ResponseCode: code.failed,
+        ResponseMessage: "Name  Required",
         succeeded : status.failed
       });
     }
     if (!number) {
       return res.status(code.success).json({
-        ResponseMessage: "Number  Required",
         ResponseCode: code.failed,
+        ResponseMessage: "Number  Required",
         succeeded : status.failed
       });
     }
@@ -50,8 +50,8 @@ export const usersignup = async (req, res) => {
       // If an existing user is found, return an error message
       if (oldUser) {
         return res.status(code.success).json({
-          ResponseMessage: "Account already exists with this email address!",
           ResponseCode: code.failed,
+          ResponseMessage: "Account already exists with this email address!",
           succeeded : status.failed
         });
       }
@@ -89,17 +89,18 @@ export const usersignup = async (req, res) => {
       
       // Return the created user and the token with a success message
       return res.status(201).json({
-        responseBody: {...response._doc, token},
         ResponseCode: code.success,
-        succeeded: status.success,
         ResponseMessage: `User Signup Successfully otp sent to your email account ! ${otp}`,
+        succeeded: status.success,
+        responseBody: {...response._doc, token},
       });
     } catch (error) {
       // If an error occurs, return an error message and log the error
       res.status(500).json({    
          ResponseCode: code.failed,
+         ResponseMessage: "Something Went Wrong",
          succeeded: status.failed,
-         ResponseMessage: "Something Went Wrong" });
+        });
       console.log(error);
     }
   };
@@ -113,8 +114,8 @@ export const usersignin = async (req, res) => {
     if (!email) {
       return res.status(code.success).json({
         ResponseCode: code.failed,
-        succeeded: status.failed,
         ResponseMessage: "Email Id Required",
+        succeeded: status.failed,
       });
     }
   
@@ -122,8 +123,8 @@ export const usersignin = async (req, res) => {
     if (!password) {
       return res.status(code.success).json({
         ResponseCode: code.failed,
-        succeeded: status.failed,
         ResponseMessage: "Password Required",
+        succeeded: status.failed,
       });
     }
   
@@ -137,8 +138,8 @@ export const usersignin = async (req, res) => {
       if (!oldUser) {
         return res.status(code.success).json({
           ResponseCode: code.failed,
-          succeeded : status.failed,
           ResponseMessage: "Account Doesn't Exists!!",
+          succeeded : status.failed,
         });
       }
   
@@ -149,8 +150,8 @@ export const usersignin = async (req, res) => {
       if (!isPasswordCorrect) {
         return res.status(code.success).json({
           ResponseCode: code.failed,
-          succeeded : status.failed,
           ResponseMessage: "Invalid Credentiails",
+          succeeded : status.failed,
         });
       }
   
@@ -164,16 +165,17 @@ export const usersignin = async (req, res) => {
       // Return the user and the token with a success message
       res.status(code.success).json({
         ResponseCode: code.success,
+        ResponseMessage: 'loggedin Successfully !',
         succeeded : status.success,
         responseBody: {...oldUser._doc,token},
-        ResponseMessage: 'loggedin Successfully !',
       });
     } catch (error) {
       // If an error occurs, return an error message and log the error
       res.status(500).json({    
         ResponseCode: code.failed,
+        ResponseMessage: "Something Went Wrong",
         succeeded: status.failed,
-        ResponseMessage: "Something Went Wrong" });
+       });
       console.log(error);
     }
 }
@@ -183,8 +185,8 @@ export const forgotPassword = async (req, res) => {
   if (!email) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded : status.failed,
       ResponseMessage: "Email Required",
+      succeeded : status.failed,
     });
   }
 
@@ -195,8 +197,8 @@ export const forgotPassword = async (req, res) => {
     if (!oldUser) {
       return res.status(code.success).json({
         ResponseCode: code.failed,
-        succeeded : status.failed,
         ResponseMessage: "Account Doesn't Exists !!",
+        succeeded : status.failed,
       });
     }
     var otp = Math.floor(100000 + Math.random() * 900000);
@@ -214,14 +216,15 @@ export const forgotPassword = async (req, res) => {
 
     res.status(code.success).json({
       ResponseCode: code.success,
-      succeeded : status.success,
       ResponseMessage: `Otp code sent your registered email address, ${otp} !!`,
+      succeeded : status.success,
     });
   } catch (error) {
     res.status(500).json({    
       ResponseCode: code.failed,
+      ResponseMessage: "Something Went Wrong" ,
       succeeded: status.failed,
-      ResponseMessage: "Something Went Wrong" });
+    });
     console.log(error);
   }
 };
@@ -231,15 +234,15 @@ export const verifyOtp = async (req, res) => {
   if (!email) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded : status.failed,
       ResponseMessage: "Email Required",
+      succeeded : status.failed,
     });
   }
   if (!otp) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded : status.failed,
       ResponseMessage: "Otp Code Required",
+      succeeded : status.failed,
     });
   }
 
@@ -250,8 +253,8 @@ export const verifyOtp = async (req, res) => {
     if (!oldUser) {
       return res.status(code.success).json({
         ResponseCode: code.failed,
-        succeeded : status.failed,
         ResponseMessage: "Account Doesn't Exists !!",
+        succeeded : status.failed,
       });
     }
 
@@ -262,21 +265,22 @@ export const verifyOtp = async (req, res) => {
     if (response.otp == otp) {
       return res.status(code.success).json({
         ResponseCode: code.success,
-        succeeded : status.success,
         ResponseMessage: `Otp Verified Successfully !!`,
+        succeeded : status.success,
       });
     } else {
       return res.status(code.success).json({
         ResponseCode: code.failed,
-        succeeded : status.failed,
         ResponseMessage: `Invalid Otp !!`,
+        succeeded : status.failed,
       });
     }
   } catch (error) {
     res.status(500).json({    
       ResponseCode: code.failed,
+      ResponseMessage: "Something Went Wrong",
       succeeded: status.failed,
-      ResponseMessage: "Something Went Wrong" });
+     });
     console.log(error);
   }
 };
@@ -286,15 +290,15 @@ export const changePassword = async (req, res) => {
   if (!email) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded : status.failed,
       ResponseMessage: "Email Required",
+      succeeded : status.failed,
     });
   }
   if (!newpassword) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded : status.failed,
       ResponseMessage: "New Password Required",
+      succeeded : status.failed,
     });
   }
   try {
@@ -305,8 +309,8 @@ export const changePassword = async (req, res) => {
     if (!oldUser) {
       return res.status(code.success).json({
         ResponseCode: code.failed,
-        succeeded : status.failed,
         ResponseMessage: "Account Doesn't Exists !!",
+        succeeded : status.failed,
       });
     }
     const hashedPassword = await bcrypt.hash(newpassword, 12);
@@ -314,14 +318,15 @@ export const changePassword = async (req, res) => {
     await oldUser.save();
     return res.status(code.success).json({
       ResponseCode: code.success,
-      succeeded : status.success,
       ResponseMessage: `Password changed successfully, Please Login !!`,
+      succeeded : status.success,
     });
   } catch (error) {
     res.status(500).json({    
       ResponseCode: code.failed,
+      ResponseMessage: "Something Went Wrong",
       succeeded: status.failed,
-      ResponseMessage: "Something Went Wrong" });
+     });
     console.log(error);
   }
 };
@@ -331,8 +336,8 @@ export const resendOtp = async (req, res) => {
   if (!email) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded : status.failed,
       ResponseMessage: "Email Required",
+      succeeded : status.failed,
     });
   }
 
@@ -343,8 +348,9 @@ export const resendOtp = async (req, res) => {
     if (!oldUser) {
       return res.status(code.success).json({
         ResponseCode: code.failed,
+        ResponseMessage: "Email Required",
         succeeded : status.failed,
-        ResponseMessage: "Account Doesn't Exists !!",
+
       });
     }
     var otp = Math.floor(100000 + Math.random() * 900000);
@@ -363,14 +369,15 @@ export const resendOtp = async (req, res) => {
 
     res.status(code.success).json({
       ResponseCode: code.success,
-      succeeded : status.success,
       ResponseMessage: `Otp code Resent your registered email address, ${otp} !!`,
+      succeeded : status.success,
     });
   } catch (error) {
     res.status(500).json({    
       ResponseCode: code.failed,
+      ResponseMessage: "Something Went Wrong",
       succeeded: status.failed,
-      ResponseMessage: "Something Went Wrong" });
+     });
     console.log(error);
   }
 };
@@ -381,8 +388,8 @@ export const getuserdetails = async (req, res) => {
   if (!id) {
     return res.status(code.success).json({
       ResponseCode: code.failed,
-      succeeded: status.failed,
       ResponseMessage: "UserId Required",
+      succeeded: status.failed,
       
     });
   }
@@ -393,21 +400,111 @@ export const getuserdetails = async (req, res) => {
     if (data) {
       return res.status(code.success).json(
         { 
-          responseBody: data,     
           ResponseCode: code.success,
-      succeeded: status.success, });
+          ResponseMessage: "user found !",
+          succeeded: status.success,
+          responseBody: data,     
+     });
     } else {
       return res.status(code.success).json({ 
         ResponseCode: code.failed,
-        succeeded: status.failed,
         ResponseMessage: "No user found !",
+        succeeded: status.failed,
       
      });
     }
   } catch (err) {
     res.status(500).json({    
       ResponseCode: code.failed,
+      ResponseMessage: "Something Went Wrong",
+      succeeded: status.failed,
+
+     });
+  }
+};
+
+export const withdrawcoins = async(req, res)=>{
+  const { uid, coins } = req.body;
+  if (!uid) {
+    return res.status(code.success).json({
+      ResponseCode: code.failed,
+      ResponseMessage: "UserId Required",
+      succeeded : status.failed,
+    });
+  }
+  if (!coins) {
+    return res.status(code.success).json({
+      ResponseCode: code.failed,
+      ResponseMessage: "Coins Required",
+      succeeded : status.failed,
+    });
+  }
+  try {
+    const oldUser = await userModel.findOne({
+      _id: uid,
+    });
+    console.log(oldUser);
+    if (!oldUser) {
+      return res.status(code.success).json({
+        ResponseCode: code.failed,
+        ResponseMessage: "Account Doesn't Exists !!",
+        succeeded : status.failed,
+      });
+    }
+    if (!oldUser || oldUser.coins < coins) {
+      return res.status(400).json({ error: 'Insufficient coins in the wallet, Please contact admin' });
+    }
+   oldUser.coins -= coins;
+    await oldUser.save();
+    return res.status(code.success).json({
+      ResponseCode: code.success,
+      succeeded : status.success,
+      ResponseMessage: `withdraw request sent to admin !, please contact admin `,
+    });
+  } catch (error) {
+    res.status(500).json({    
+      ResponseCode: code.failed,
       succeeded: status.failed,
       ResponseMessage: "Something Went Wrong" });
+    console.log(error);
+  }
+};
+
+export const getusercoins = async(req, res)=>{
+  const uid = req.params.id;
+  if (!uid) {
+    return res.status(code.success).json({
+      ResponseCode: code.failed,
+      succeeded : status.failed,
+      ResponseMessage: "UserId Required",
+    });
+  }
+  try {
+    const oldUser = await userModel.findOne({
+      _id: uid,
+    });
+    console.log(oldUser);
+    if (!oldUser) {
+      return res.status(code.success).json({
+        ResponseCode: code.failed,
+        succeeded : status.failed,
+        ResponseMessage: "Account Doesn't Exists !!",
+      });
+    }
+  
+    return res.status(code.success).json({
+      ResponseCode: code.success,
+      succeeded : status.success,
+      responseBody : {
+        coins : oldUser.coins
+      },
+      ResponseMessage: `User coins fetched  `,
+    });
+  } catch (error) {
+    res.status(500).json({    
+      ResponseCode: code.failed,
+      succeeded: status.failed,
+      ResponseMessage: "Something Went Wrong" });
+    console.log(error);
   }
 };
